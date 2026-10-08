@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學測英文重點單字擷取系統</title>
+    <style>
+        body { font-family: "微軟正黑體", sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; }
+        .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 150px; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; resize: vertical; }
+        button { background-color: #0d6efd; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #0b5ed7; }
+        
+        /* 文章閱讀區塊樣式 */
+        .article-area { margin-top: 20px; padding: 15px; background-color: #fdfdfe; border: 1px solid #e9ecef; border-radius: 6px; line-height: 1.8; font-size: 18px; display: none; }
+        
+        /* 高亮與 Tooltip 核心樣式 */
+        .highlight {
+            background-color: #fff3cd; /* 螢光黃背景 */
+            border-bottom: 2px solid #ffc107;
+            color: #212529;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+
+        .highlight .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #343a40;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* 顯示在單字正上方 */
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.5;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* 產生 Tooltip 下方的小三角形 */
+        .highlight .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        .highlight:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .result-area { margin-top: 30px; }
+        .vocab-card { border-left: 4px solid #0d6efd; background-color: #f8f9fa; padding: 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0; }
+        .vocab-head { margin-bottom: 5px; }
+        .word { font-size: 18px; font-weight: bold; color: #212529; }
+        .pos { color: #6c757d; font-size: 14px; margin-left: 8px; }
+        .meaning { margin: 0; color: #495057; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📝 學測重點單字擷取器</h2>
+    <p>請貼上考題原文或閱讀測驗：</p>
+    <textarea id="exam-text" placeholder="The abandoned dogs were rescued..."></textarea>
+    <button onclick="analyzeText()">分析單字</button>
+
+    <!-- 新增：用來顯示高亮文章的區塊 -->
+    <div class="article-area" id="article-container"></div>
+
+    <div class="result-area" id="result-container">
+        <!-- 單字卡解析結果會顯示在這裡 -->
+    </div>
+</div>
+
+<script>
+    // 解決正則表達式特殊字元衝突的輔助函式
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    async function analyzeText() {
+        const text = document.getElementById('exam-text').value;
+        const resultContainer = document.getElementById('result-container');
+        const articleContainer = document.getElementById('article-container');
+        
+        if (!text.trim()) {
+            alert("請先輸入文章！");
+            return;
+        }
+
+        resultContainer.innerHTML = "<p>正在解析 NLP 與比對字典...</p>";
+        articleContainer.style.display = "none"; // 先隱藏文章區塊
+
+        try {
+            const response = await fetch('/api/extract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+
+            if (data.results.length === 0) {
+                resultContainer.innerHTML = "<p>這段文章中沒有找到 7000 單字表內的重點字。</p>";
+                return;
+            }
+
+            // 1. 處理文章高亮邏輯
+            // 將換行符號替換成 HTML 的 <br> 標籤，保留段落排版
+            let highlightedText = text.replace(/\n/g, "<br>");
+            
+            data.results.forEach(item => {
+                // 使用正則表達式 \b 確保只匹配完整的單字（避免把 start 裡面的 art 誤判）
+                // (?![^<]*>) 確保不會替換到已經變成 HTML 標籤內的屬性
+                const regex = new RegExp('\\b' + escapeRegExp(item.original_text) + '\\b(?![^<]*>)', 'gi');
+                
+                // 組合帶有 Tooltip 的 HTML 標籤
+                const spanHTML = `<span class="highlight">$&<span class="tooltiptext">
+                    <span style="color:#ffc107; font-weight:bold;">${item.word}</span> [${item.part_of_speech}]<br>
+                    ${item.meaning}
+                </span></span>`;
+                
+                highlightedText = highlightedText.replace(regex, spanHTML);
+            });
+
+            // 顯示高亮後的文章
+            articleContainer.innerHTML = highlightedText;
+            articleContainer.style.display = "block";
+
+            // 2. 處理下方單字卡邏輯
+            let htmlContent = `<h3>🎯 找到 ${data.word_count} 個重點單字：</h3>`;
+            data.results.forEach(item => {
+                htmlContent += `
+                    <div class="vocab-card">
+                        <div class="vocab-head">
+                            <span class="word">${item.word}</span>
+                            <span class="pos">[${item.part_of_speech}]</span>
+                        </div>
+                        <p class="meaning">${item.meaning}</p>
+                    </div>
+                `;
+            });
+
+            resultContainer.innerHTML = htmlContent;
+
+        } catch (error) {
+            console.error('Error:', error);
+            resultContainer.innerHTML = "<p style='color: red;'>連線失敗，請確認 Flask 伺服器是否正在運行。</p>";
+        }
+    }
+</script>
+
+</body>
+</html>
