@@ -11486,12 +11486,7 @@
         "part_of_speech": "",
         "meaning": "n.障礙(物)；妨礙"
     },
-    {
-        "word": "",
-        "phonetic": "[C][(+to)]",
-        "part_of_speech": "",
-        "meaning": ""
-    },
+
     {
         "word": "obtain",
         "phonetic": "[əbˋten]",
@@ -11506,9 +11501,9 @@
     },
     {
         "word": "occupation",
-        "phonetic": "[͵ɑkjəˋpeʃən] n.佔領[U]；職業[C]",
+        "phonetic": "[͵ɑkjəˋpeʃən] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.佔領[U]；職業[C]"
     },
     {
         "word": "occupy",
@@ -11536,28 +11531,18 @@
     },
     {
         "word": "opera",
-        "phonetic": "[ˋɑpərə] n.歌劇[C]；歌劇院[C]",
+        "phonetic": "[ˋɑpərə] n.",
         "part_of_speech": "",
-        "meaning": "；歌劇"
+        "meaning": "歌劇[C]；歌劇院[C]"
     },
-    {
-        "word": "藝術",
-        "phonetic": "[U]",
-        "part_of_speech": "",
-        "meaning": ""
-    },
+
     {
         "word": "operation",
-        "phonetic": "[͵ɑpəˋreʃən] n.操作；運轉[U]",
+        "phonetic": "[͵ɑpəˋreʃən] n.",
         "part_of_speech": "",
-        "meaning": "；手"
+        "meaning": "操作；運轉[U]"
     },
-    {
-        "word": "術",
-        "phonetic": "[C]",
-        "part_of_speech": "",
-        "meaning": ""
-    },
+
     {
         "word": "oppose",
         "phonetic": "[əˋpoz]",
@@ -11695,13 +11680,7 @@
         "phonetic": "[ˋpɑrtnɚ͵ʃɪp]",
         "part_of_speech": "",
         "meaning": "n.合夥(或合作)關"
-    },
-    {
-        "word": "係",
-        "phonetic": "[U]",
-        "part_of_speech": "",
-        "meaning": ""
-    },
+    }, 
     {
         "word": "passive",
         "phonetic": "[ˋpæsɪv]",
@@ -11716,9 +11695,9 @@
     },
     {
         "word": "pebble",
-        "phonetic": "[ˋpɛb!] n.小卵石[C]",
+        "phonetic": "[ˋpɛb!] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.小卵石[C]"
     },
     {
         "word": "peculiar",
@@ -11740,15 +11719,15 @@
     },
     {
         "word": "penalty",
-        "phonetic": "[ˋpɛn!tɪ] n.處罰；刑罰[U][C][(+for)]",
+        "phonetic": "[ˋpɛn!tɪ] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.處罰；刑罰[U][C][(+for)]"
     },
     {
         "word": "percent",
-        "phonetic": "[pɚˋsɛnt] n.百分之一[C]",
+        "phonetic": "[pɚˋsɛnt] ",
         "part_of_speech": "",
-        "meaning": "；百分率(per cent)"
+        "meaning": "n.百分之一[C]；百分率(per cent)"
     },
     {
         "word": "percentage",
