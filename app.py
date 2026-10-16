@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify, render_template
 from nlp_matcher import load_vocab_db, extract_key_vocabulary
+import pdfplumber  # 新增：引入處理 PDF 的套件
 
 app = Flask(__name__)
 
-# 在伺服器啟動時，預先將 7000 單字庫載入記憶體
-# 這樣就不用每次有人發送請求時都重新讀取 JSON，大幅提升效能
 DB_PATH = "7000_words.json"
 try:
     vocab_db = load_vocab_db(DB_PATH)
@@ -15,29 +14,51 @@ except FileNotFoundError:
 
 @app.route('/')
 def index():
-    # 當使用者造訪首頁時，回傳 templates 資料夾內的 index.html
     return render_template('index.html')
 
 @app.route('/api/extract', methods=['POST'])
 def extract_api():
-    # 接收前端傳來的 JSON 資料 (包含考卷文字)
+    # (原本的分析文字程式碼保持不變...)
     data = request.get_json()
-    
     if not data or 'text' not in data:
         return jsonify({"error": "沒有收到文章資料"}), 400
-        
     text = data['text']
-    
-    # 呼叫我們的 NLP 腳本進行解析與過濾
     matched_results = extract_key_vocabulary(text, vocab_db)
-    
-    # 將擷取出來的單字陣列回傳給前端
     return jsonify({
         "status": "success",
         "word_count": len(matched_results),
         "results": matched_results
     })
 
+# ==========================================
+# [新增] 處理 PDF 上傳與文字讀取的 API
+# ==========================================
+@app.route('/api/upload_pdf', methods=['POST'])
+def upload_pdf():
+    # 檢查請求中是否包含檔案
+    if 'file' not in request.files:
+        return jsonify({"error": "沒有找到上傳的檔案"}), 400
+        
+    file = request.files['file']
+    
+    # 檢查檔名確保使用者有選擇檔案，且是 PDF 格式
+    if file.filename == '' or not file.filename.lower().endswith('.pdf'):
+        return jsonify({"error": "請上傳有效的 PDF 檔案"}), 400
+
+    try:
+        extracted_text = ""
+        # 直接從記憶體讀取上傳的檔案，不存進硬碟以節省空間
+        with pdfplumber.open(file) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    extracted_text += text + "\n\n"
+                    
+        return jsonify({"status": "success", "text": extracted_text})
+        
+    except Exception as e:
+        print(f"PDF 讀取錯誤: {e}")
+        return jsonify({"error": "PDF 檔案讀取失敗，可能是檔案損毀或加密"}), 500
+
 if __name__ == '__main__':
-    # 啟動 Flask 開發伺服器，開啟 debug 模式方便修改後自動重整
     app.run(debug=True, port=5000)
