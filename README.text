@@ -1,0 +1,77 @@
+# 🏫 學測英文｜重點單字萃取與學習系統 (GSAT Vocabulary NLP System)
+
+一個專為台灣高中生設計的英文閱讀與單字學習輔助平台。本系統透過 Python Flask 與 NLP 自然語言處理技術，能自動解析英文文章或歷屆學測 PDF 考卷，精準擷取大考中心頒布的 7000 單字，並提供「沉浸式閱讀、專屬單字本、互動閃卡測驗」的完整學習迴圈。
+
+## ✨ 核心特色與功能 (Features)
+
+*   **🧠 智慧語意解析 (NLP Lemmatization)**
+    *   拋棄傳統死板的字串比對，導入 `spaCy` 模型讀懂上下文。自動還原單字的時態與複數變化（例如 `abandoned` -> `abandon`），大幅提升考題單字擷取的精準度。
+*   **📖 沉浸式閱讀體驗 (Immersive Reading UI)**
+    *   採用動態正規表達式 (Regex Replace) 技術，在不破壞原文結構的前提下，為重點單字標註「手繪螢光筆」高亮。
+    *   結合純 CSS 打造的懸浮視窗 (Tooltip)，滑鼠停留在單字上即可顯示詞性與中文解釋，實現「視線不離開文章」的流暢閱讀。
+*   **📄 PDF 考卷自動匯入 (PDF Parsing)**
+    *   整合 `pdfplumber` 套件，支援直接上傳歷屆學測 PDF 考題，系統會在記憶體中自動解析雙欄文字並進行單字萃取。
+*   **📚 個人專屬單字本 (Personalized Vocabulary)**
+    *   將學習主導權交還給使用者。透過前端狀態管理，使用者可主動勾選不熟的單字加入專屬單字列。
+    *   支援一鍵複製為純文字或 **Quizlet 匯入格式 (Tab-separated)**。
+*   **🎯 互動閃卡測驗 (Flashcard Quiz)**
+    *   將收集到的不熟單字，一鍵轉換為「教室黑板風格」的互動式閃卡測驗。
+    *   具備隨機洗牌演算法與答題計分機制，立即驗收學習成效。
+
+## 🛠️ 技術堆疊 (Tech Stack)
+
+### Backend & NLP
+*   **Framework:** Python 3.11, Flask, Gunicorn
+*   **NLP Engine:** spaCy (`en_core_web_sm`)
+*   **Data Parsing:** pdfplumber (PDF 解析), Regular Expressions
+*   **Database:** JSON (結構化 7000 單字字典)
+
+### Frontend
+*   **UI / UX:** Vanilla HTML5, CSS3, JavaScript (Fetch API)
+*   **Design Style:** 現代學院風 (學院藍紫配色 `#0f236b`、活頁筆記本排版、擬真綠黑板設計)
+
+### Deployment
+*   **Cloud Platform:** Render (PaaS)
+*   **Version Control:** Git, GitHub
+
+## 🚀 本機開發與執行 (Local Setup)
+
+1. **複製專案 (Clone Repository)**
+   ```bash
+   git clone [https://github.com/thisisme66688/ENGLISH.git](https://github.com/thisisme66688/ENGLISH.git)
+   cd 英文考卷分析
+
+   安裝依賴套件 (Install Dependencies)
+
+Bash
+pip install -r requirements.txt
+下載 spaCy 英文語言模型
+
+Bash
+python -m spacy download en_core_web_sm
+啟動 Flask 開發伺服器
+
+Bash
+python app.py
+伺服器啟動後，請在瀏覽器前往 http://127.0.0.1:5000 即可使用。
+
+☁️ 雲端部署指南 (Render Deployment)
+本專案已配置適用於 Render 的生產環境設定：
+
+Build Command: pip install -r requirements.txt
+
+Start Command: gunicorn app:app
+
+Environment Variables: 必須新增 PYTHON_VERSION = 3.11.0 以確保 spaCy C++ 底層依賴能正確預先編譯。
+
+🗺️ 未來展望 (Future Roadmap)
+[ ] 關聯式資料庫導入：將 JSON 字典升級為 SQLite/PostgreSQL，支援單字多重詞性與一詞多義的動態管理。
+
+[ ] 歷屆考題詞頻分析：導入 Pandas 分析歷屆學測考題文本，自動標示單字的「歷屆出題頻率」。
+
+[ ] 難易度分級開關：新增 Level 1-6 的難度篩選器，降低使用者的資訊與視覺疲勞。
+
+👨‍💻 作者 (Author)
+Yuxiang Lee (Tony)
+
+熱衷於教育科技與軟體開發的探索者

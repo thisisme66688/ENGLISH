@@ -3,31 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>學測英文重點單字擷取與學習系統</title>
+    <title>學測英文重點單字學習系統</title>
     <style>
-        body { font-family: "微軟正黑體", sans-serif; max-width: 850px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; }
-        .container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 150px; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; resize: vertical; }
+        /* 注入你提供的色板作為 CSS 變數，並新增明亮環境色 */
+        :root {
+            --navy-base: #0f236b; /* 基準色 0% */
+            --navy-L10: #27397a;  /* +10% */
+            --navy-L20: #3f4f89;  /* +20% */
+            --navy-L40: #6f7ba6;  /* +40% */
+            --navy-L70: #b7bdd3;  /* +70% */
+            --navy-L80: #cfd3e1;  /* +80% */
+            --navy-L90: #e7e9f0;  /* +90% */
+            
+            --navy-D10: #0e2060;  /* -10% */
+            --navy-D30: #0b194b;  /* -30% */
+            --navy-D50: #081236;  /* -50% */
+            
+            /* 【改動 1】明亮的桌面底色與綠黑板 */
+            --bright-desk: #f4f6f9; 
+            --green-board: #234d30; 
+            --highlighter: #ffeb3b; /* 螢光筆黃 */
+        }
+
+        body { 
+            font-family: "微軟正黑體", sans-serif; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 30px 20px; 
+            background-color: var(--bright-desk); /* 換成明亮的桌面 */
+            color: var(--navy-D50); 
+        }
         
-        /* 按鈕基本樣式 */
-        button { border: none; padding: 10px 18px; font-size: 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background-color: #0d6efd; color: white; }
-        .btn-primary:hover { background-color: #0b5ed7; }
-        .btn-success { background-color: #198754; color: white; }
-        .btn-success:hover { background-color: #157347; }
-        .btn-warning { background-color: #ffc107; color: #212529; font-weight: bold; }
-        .btn-warning:hover { background-color: #ffca2c; }
-        .btn-outline { background-color: transparent; border: 1px solid #6c757d; color: #6c757d; }
-        .btn-outline:hover { background-color: #6c757d; color: white; }
+        /* 活頁筆記本造型的主容器 */
+        .container { 
+            background-color: #ffffff; 
+            padding: 30px 40px; 
+            border-radius: 4px 15px 15px 4px; 
+            /* 【改動 2】減輕陰影，讓畫面更輕盈 */
+            box-shadow: 5px 8px 20px rgba(15, 35, 107, 0.08); 
+            border-left: 35px solid var(--navy-base); 
+            position: relative;
+        }
+
+        /* 筆記本打孔造型 */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 20px; left: -25px; bottom: 20px; width: 15px;
+            background-image: radial-gradient(circle, var(--bright-desk) 6px, transparent 7px);
+            background-size: 15px 40px; 
+        }
+
+        h2 { 
+            color: var(--navy-base); 
+            border-bottom: 3px dashed var(--navy-L40); 
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 橫條紋筆記本內頁效果 */
+        textarea, .article-area { 
+            width: 100%; 
+            padding: 10px 15px; 
+            font-size: 18px; 
+            border: 2px solid var(--navy-L70); 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            
+            background-color: #fff;
+            background-image: repeating-linear-gradient(transparent, transparent 31px, var(--navy-L90) 31px, var(--navy-L90) 32px);
+            line-height: 32px;
+        }
+        textarea { height: 160px; resize: vertical; }
         
-        /* 文章閱讀區塊樣式 */
-        .article-area { margin-top: 20px; padding: 15px; background-color: #fdfdfe; border: 1px solid #e9ecef; border-radius: 6px; line-height: 1.8; font-size: 18px; display: none; }
+        .article-area { margin-top: 20px; display: none; }
+
+        button { border: none; padding: 10px 20px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-primary { background-color: var(--navy-base); color: white; }
+        .btn-primary:hover { background-color: var(--navy-D10); transform: translateY(-1px); }
+        .btn-success { background-color: var(--navy-L20); color: white; }
+        .btn-success:hover { background-color: var(--navy-L10); }
+        .btn-warning { background-color: #ffc107; color: var(--navy-D50); }
+        .btn-warning:hover { background-color: #e0a800; }
+        .btn-outline { background-color: white; border: 2px solid var(--navy-L40); color: var(--navy-base); box-shadow: none; }
+        .btn-outline:hover { background-color: var(--navy-L90); border-color: var(--navy-base); }
         
-        /* 高亮與 Tooltip 樣式 */
+        /* 學生螢光筆畫記效果 */
         .highlight {
-            background-color: #fff3cd;
-            border-bottom: 2px solid #ffc107;
-            color: #212529;
+            background: linear-gradient(104deg, rgba(255,235,59,0) 0.9%, rgba(255,235,59,1) 2.4%, rgba(255,235,59,0.5) 5.8%, rgba(255,235,59,0.8) 93%, rgba(255,235,59,0.7) 96%, rgba(255,235,59,0) 98%);
+            color: var(--navy-D50);
             font-weight: bold;
             cursor: pointer;
             position: relative;
@@ -37,160 +104,133 @@
         }
 
         .highlight .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #343a40;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 14px;
-            font-weight: normal;
-            line-height: 1.5;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            visibility: hidden; width: 200px;
+            background-color: var(--navy-base); color: #fff;
+            text-align: left; border-radius: 6px; padding: 10px;
+            position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -100px;
+            opacity: 0; transition: opacity 0.3s; font-size: 14px; font-weight: normal; line-height: 1.5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-
         .highlight .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #343a40 transparent transparent transparent;
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
+            border-width: 5px; border-style: solid; border-color: var(--navy-base) transparent transparent transparent;
         }
-
-        .highlight:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
+        .highlight:hover .tooltiptext { visibility: visible; opacity: 1; }
 
         .result-area { margin-top: 30px; }
         
-        /* 單字卡與選擇框 */
+        /* 單字卡 */
         .vocab-card { 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-left: 4px solid #0d6efd; 
-            background-color: #f8f9fa; 
-            padding: 12px 16px; 
-            margin-bottom: 10px; 
-            border-radius: 0 4px 4px 0; 
-            transition: background-color 0.2s;
+            display: flex; align-items: center; justify-content: space-between;
+            border-left: 5px solid var(--navy-L40); 
+            background-color: var(--bright-desk); /* 單字卡底色也調亮 */
+            padding: 12px 18px; margin-bottom: 12px; border-radius: 4px 8px 8px 4px; 
+            transition: all 0.2s;
         }
-        .vocab-card.selected { background-color: #e7f1ff; border-left-color: #0b5ed7; }
-        .word { font-size: 18px; font-weight: bold; color: #212529; }
-        .pos { color: #6c757d; font-size: 14px; margin-left: 8px; }
-        .meaning { margin: 4px 0 0 0; color: #495057; }
+        .vocab-card.selected { background-color: var(--navy-L80); border-left-color: var(--navy-base); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .word { font-size: 19px; font-weight: bold; color: var(--navy-D10); }
+        .pos { color: var(--navy-L40); font-size: 14px; margin-left: 8px; font-family: monospace; }
+        .meaning { margin: 6px 0 0 0; color: var(--navy-D30); }
 
-        /* 個人單字本與測驗區塊 */
-        .my-vocab-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f1f3f5;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-        .vocab-badge {
-            display: inline-block;
-            background-color: white;
-            border: 1px solid #ced4da;
-            padding: 6px 12px;
-            border-radius: 20px;
-            margin: 4px;
-            font-size: 14px;
-        }
+        .my-vocab-section { margin-top: 40px; padding: 20px; background-color: var(--bright-desk); border-radius: 8px; border: 2px dashed var(--navy-L40); }
+        .vocab-badge { display: inline-block; background-color: white; border: 1px solid var(--navy-L40); color: var(--navy-base); padding: 6px 12px; border-radius: 20px; margin: 4px; font-size: 14px; font-weight: bold;}
 
-        /* 測驗彈窗樣式 */
+        /* 【改動 3】經典墨綠色黑板測驗彈窗 */
         .quiz-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
+            background-color: var(--green-board); 
+            padding: 40px 30px;
+            border-radius: 4px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            margin-top: 15px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4), 0 10px 20px rgba(15,35,107,0.15);
+            border: 12px solid #a67c52; /* 原木色邊框調亮 */
+            border-image: linear-gradient(45deg, #8b5a2b, #cd853f, #8b5a2b) 1; 
+            margin-top: 20px;
+            position: relative;
         }
-        .quiz-word { font-size: 32px; font-weight: bold; color: #0d6efd; margin-bottom: 10px; }
-        .quiz-meaning { font-size: 22px; color: #198754; margin: 20px 0; min-height: 35px; }
+        
+        .quiz-card::after {
+            content: ""; position: absolute; bottom: -20px; left: -10px; right: -10px; height: 10px;
+            background-color: #6b4c3a; border-radius: 2px; box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .quiz-word { 
+            font-size: 42px; font-weight: bold; 
+            color: #ffffff; 
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; 
+            letter-spacing: 2px;
+            margin-bottom: 10px; 
+            text-shadow: 1px 1px 3px rgba(255,255,255,0.4);
+        }
+        .quiz-meaning { 
+            font-size: 24px; 
+            color: #ffeb3b; 
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            margin: 20px 0; min-height: 35px; 
+            text-shadow: 1px 1px 2px rgba(255,235,59,0.4);
+        }
+        .quiz-progress { color: #a3c2b0; font-family: monospace; font-size: 16px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>📝 學測重點單字擷取器</h2>
+    <h2>🏫 學測英文｜重點單字萃取筆記</h2>
     
-    <!-- PDF 上傳區塊 -->
-    <div style="margin-bottom: 15px;">
+    <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="uploadAndReadPDF()">
         <button class="btn-success" onclick="document.getElementById('pdf-upload').click()">
             📄 匯入 PDF 考卷
         </button>
-        <span id="upload-status" style="color: #6c757d; font-size: 14px; margin-left: 8px;">支援上傳 .pdf 檔案</span>
+        <span id="upload-status" style="color: var(--navy-L40); font-size: 14px;">(支援上傳 .pdf 檔案)</span>
     </div>
 
-    <p>或手動貼上考題原文或閱讀測驗：</p>
+    <p style="color: var(--navy-L20); font-weight: bold;">📝 或手動貼上課文/閱讀測驗：</p>
     <textarea id="exam-text" placeholder="The abandoned dogs were rescued..."></textarea>
-    <button class="btn-primary" style="margin-top: 10px;" onclick="analyzeText()">分析單字</button>
+    
+    <div style="text-align: right; margin-top: 15px;">
+        <button class="btn-primary" onclick="analyzeText()">🔍 分析重點單字</button>
+    </div>
 
-    <!-- 高亮文章區塊 -->
     <div class="article-area" id="article-container"></div>
-
-    <!-- 解析單字結果列表 -->
     <div class="result-area" id="result-container"></div>
 
-    <!-- 我的不熟單字本區塊 -->
     <div class="my-vocab-section" id="my-vocab-section" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <h3>📚 我的不熟單字本 (<span id="selected-count">0</span>)</h3>
-            <div>
-                <button class="btn-outline" onclick="copySelectedWords('text')">📋 複製為純文字</button>
-                <button class="btn-outline" onclick="copySelectedWords('quizlet')">📥 複製 Quizlet 格式</button>
-                <button class="btn-warning" onclick="startQuiz()">🎯 開始單字小測驗</button>
+            <h3 style="color: var(--navy-base); margin: 0;">📚 我的不熟單字本 (<span id="selected-count">0</span>)</h3>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-outline" onclick="copySelectedWords('text')">📋 複製</button>
+                <button class="btn-outline" onclick="copySelectedWords('quizlet')">📥 Quizlet</button>
+                <button class="btn-warning" onclick="startQuiz()">🎯 上黑板測驗</button>
             </div>
         </div>
         <div id="my-vocab-tags" style="margin-top: 15px;"></div>
     </div>
 
-    <!-- 單字小測驗卡片區塊 -->
+    <!-- 黑板測驗區塊 -->
     <div id="quiz-container" style="display: none;">
-        <!-- 我們給這個內部容器一個 ID，方便在測驗結束時整塊替換掉 -->
         <div class="quiz-card" id="quiz-card-content">
-            <!-- 題目內容由 JavaScript 動態填入 -->
+            <!-- 題目內容 -->
         </div>
     </div>
 </div>
 
 <script>
-    // 全域變數：儲存後端傳回的所有單字與使用者選取的單字
+    // --- 原本的 JavaScript 邏輯完全保留 ---
     let currentResults = [];
     let selectedWordsMap = new Map();
 
-    // 解決正則表達式特殊字元衝突
     function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-    // 分析文章主功能
     async function analyzeText() {
         const text = document.getElementById('exam-text').value;
         const resultContainer = document.getElementById('result-container');
         const articleContainer = document.getElementById('article-container');
         
-        if (!text.trim()) {
-            alert("請先輸入或匯入文章！");
-            return;
-        }
+        if (!text.trim()) { alert("請先輸入或匯入文章！"); return; }
 
-        resultContainer.innerHTML = "<p>正在解析 NLP 與比對字典...</p>";
+        resultContainer.innerHTML = "<p style='color: var(--navy-L40); font-weight: bold;'>⏳ 正在翻閱單字本解析中...</p>";
         articleContainer.style.display = "none";
 
         try {
@@ -199,22 +239,20 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: text })
             });
-
             const data = await response.json();
             currentResults = data.results || [];
 
             if (currentResults.length === 0) {
-                resultContainer.innerHTML = "<p>這段文章中沒有找到 7000 單字表內的重點字。</p>";
+                resultContainer.innerHTML = "<p>太棒了！這段文章中沒有 7000 單字表內的艱澀重點字。</p>";
                 document.getElementById('my-vocab-section').style.display = 'none';
                 return;
             }
 
-            // 1. 高亮文章處理
             let highlightedText = text.replace(/\n/g, "<br>");
             currentResults.forEach(item => {
                 const regex = new RegExp('\\b' + escapeRegExp(item.original_text) + '\\b(?![^<]*>)', 'gi');
                 const spanHTML = `<span class="highlight">$&<span class="tooltiptext">
-                    <span style="color:#ffc107; font-weight:bold;">${item.word}</span> [${item.part_of_speech}]<br>
+                    <span style="color:#ffeb3b; font-weight:bold;">${item.word}</span> [${item.part_of_speech}]<br>
                     ${item.meaning}
                 </span></span>`;
                 highlightedText = highlightedText.replace(regex, spanHTML);
@@ -222,21 +260,17 @@
 
             articleContainer.innerHTML = highlightedText;
             articleContainer.style.display = "block";
-
-            // 2. 渲染單字卡列表
             renderVocabCards();
             document.getElementById('my-vocab-section').style.display = 'block';
 
         } catch (error) {
-            console.error('Error:', error);
-            resultContainer.innerHTML = "<p style='color: red;'>連線失敗，請確認 Flask 伺服器正在運行。</p>";
+            resultContainer.innerHTML = "<p style='color: red;'>❌ 連線失敗，請確認伺服器狀態。</p>";
         }
     }
 
-    // 渲染單字卡與勾選狀態
     function renderVocabCards() {
         const resultContainer = document.getElementById('result-container');
-        let htmlContent = `<h3>🎯 找到 ${currentResults.length} 個重點單字（請勾選不熟的字彙）：</h3>`;
+        let htmlContent = `<h3 style="color: var(--navy-base);">📌 找到 ${currentResults.length} 個重點單字（請勾選不熟的字彙）：</h3>`;
 
         currentResults.forEach((item, index) => {
             const isChecked = selectedWordsMap.has(item.word);
@@ -248,120 +282,85 @@
                         <p class="meaning">${item.meaning}</p>
                     </div>
                     <div>
-                        <label style="cursor: pointer; font-weight: bold; color: #0d6efd;">
-                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectWord(${index})"> 標記為不熟
+                        <label style="cursor: pointer; font-weight: bold; color: var(--navy-L20);">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectWord(${index})" style="transform: scale(1.3); margin-right: 5px;"> 筆記
                         </label>
                     </div>
                 </div>
             `;
         });
-
         resultContainer.innerHTML = htmlContent;
         updateMyVocabList();
     }
 
-    // 切換選取狀態
     function toggleSelectWord(index) {
         const item = currentResults[index];
-        if (selectedWordsMap.has(item.word)) {
-            selectedWordsMap.delete(item.word);
-        } else {
-            selectedWordsMap.set(item.word, item);
-        }
+        if (selectedWordsMap.has(item.word)) selectedWordsMap.delete(item.word);
+        else selectedWordsMap.set(item.word, item);
         renderVocabCards();
     }
 
-    // 更新「我的不熟單字本」預覽區
     function updateMyVocabList() {
         const tagsContainer = document.getElementById('my-vocab-tags');
         const countSpan = document.getElementById('selected-count');
-        
         countSpan.innerText = selectedWordsMap.size;
         
         if (selectedWordsMap.size === 0) {
-            tagsContainer.innerHTML = "<span style='color: #6c757d; font-size: 14px;'>尚未勾選任何不熟單字。</span>";
+            tagsContainer.innerHTML = "<span style='color: var(--navy-L40); font-size: 14px;'>尚未勾選任何單字。</span>";
             return;
         }
 
         let tagsHTML = "";
         selectedWordsMap.forEach(item => {
-            tagsHTML += `<span class="vocab-badge"><b>${item.word}</b> [${item.part_of_speech}] ${item.meaning}</span>`;
+            tagsHTML += `<span class="vocab-badge">${item.word} <span style="color:var(--navy-L40); font-weight:normal;">${item.meaning}</span></span>`;
         });
         tagsContainer.innerHTML = tagsHTML;
     }
 
-    // 一鍵複製單字本
     function copySelectedWords(format) {
-        if (selectedWordsMap.size === 0) {
-            alert("請先勾選至少一個不熟單字！");
-            return;
-        }
-
+        if (selectedWordsMap.size === 0) { alert("請先勾選單字！"); return; }
         let copyText = "";
         selectedWordsMap.forEach(item => {
-            if (format === 'quizlet') {
-                copyText += `${item.word}\t[${item.part_of_speech}] ${item.meaning}\n`;
-            } else {
-                copyText += `${item.word} [${item.part_of_speech}] ${item.meaning}\n`;
-            }
+            if (format === 'quizlet') copyText += `${item.word}\t[${item.part_of_speech}] ${item.meaning}\n`;
+            else copyText += `${item.word} [${item.part_of_speech}] ${item.meaning}\n`;
         });
-
         navigator.clipboard.writeText(copyText).then(() => {
-            alert(format === 'quizlet' ? "✅ 已複製為 Quizlet 格式 (Tab 分隔)！" : "✅ 已複製為純文字清單！");
+            alert(format === 'quizlet' ? "✅ 已複製為 Quizlet 格式！" : "✅ 已複製為純文字！");
         });
     }
 
-    // ==========================================
-    // 小測驗 (Flashcard Quiz) 邏輯
-    // ==========================================
-    let quizQuestions = [];
-    let quizIndex = 0;
-    let quizScore = 0;
+    let quizQuestions = []; let quizIndex = 0; let quizScore = 0;
 
     function startQuiz() {
-        if (selectedWordsMap.size === 0) {
-            alert("請先勾選至少一個不熟單字才能開始測驗！");
-            return;
-        }
-
-        quizQuestions = Array.from(selectedWordsMap.values());
-        // 隨機打亂題目順序
-        quizQuestions.sort(() => Math.random() - 0.5);
-        
-        quizIndex = 0;
-        quizScore = 0;
-
+        if (selectedWordsMap.size === 0) { alert("請先勾選單字才能測驗！"); return; }
+        quizQuestions = Array.from(selectedWordsMap.values()).sort(() => Math.random() - 0.5);
+        quizIndex = 0; quizScore = 0;
         document.getElementById('quiz-container').style.display = 'block';
         document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
         loadQuizQuestion();
     }
 
-    // 負責繪製「正在測驗中」的畫面，或是「測驗結束」的畫面
     function loadQuizQuestion() {
         const quizCardContent = document.getElementById('quiz-card-content');
-
         if (quizIndex >= quizQuestions.length) {
-            // 修正：測驗完成時，直接替換掉整個卡片內部的 HTML
             quizCardContent.innerHTML = `
-                <h2>🎉 測驗完成！</h2>
-                <p style="font-size: 18px;">你在 ${quizQuestions.length} 個標記單字中答對了 <b>${quizScore}</b> 個！</p>
-                <button class="btn-primary" onclick="document.getElementById('quiz-container').style.display='none'">結束測驗並關閉</button>
+                <h2 style="color: white; border: none; justify-content: center;">🎉 下課囉！測驗完成！</h2>
+                <p style="font-size: 20px; color: var(--navy-L80);">你在 ${quizQuestions.length} 題中答對了 <b style="color: #ffeb3b; font-size: 28px;">${quizScore}</b> 題！</p>
+                <button class="btn-outline" style="margin-top: 20px;" onclick="document.getElementById('quiz-container').style.display='none'">擦黑板 (關閉)</button>
             `;
             return;
         }
-
-        // 還有題目，繪製題目畫面
         const q = quizQuestions[quizIndex];
         quizCardContent.innerHTML = `
-            <div style="font-size: 14px; color: #6c757d;" id="quiz-progress">題目 ${quizIndex + 1} / ${quizQuestions.length}</div>
-            <div class="quiz-word" id="quiz-word">${q.word}</div>
+            <div class="quiz-progress">黑板抽測：第 ${quizIndex + 1} / ${quizQuestions.length} 題</div>
+            <div class="quiz-word">${q.word}</div>
             <div class="quiz-meaning" id="quiz-meaning" style="visibility: hidden;">[${q.part_of_speech}] ${q.meaning}</div>
             
             <div style="margin-top: 20px;">
                 <button class="btn-outline" id="btn-show-answer" onclick="showQuizAnswer()">👁️ 顯示中文</button>
                 <div id="quiz-actions" style="display: none; margin-top: 10px;">
                     <button class="btn-success" onclick="answerQuiz(true)">✅ 我記住了</button>
-                    <button class="btn-primary" style="background-color: #dc3545;" onclick="answerQuiz(false)">❌ 還不熟</button>
+                    <button class="btn-warning" onclick="answerQuiz(false)">❌ 還不熟</button>
                 </div>
             </div>
         `;
@@ -376,43 +375,30 @@
     function answerQuiz(isCorrect) {
         if (isCorrect) quizScore++;
         quizIndex++;
-        loadQuizQuestion(); // 載入下一題，或觸發結束畫面
+        loadQuizQuestion();
     }
 
-    // PDF 上傳邏輯
     async function uploadAndReadPDF() {
         const fileInput = document.getElementById('pdf-upload');
         const statusText = document.getElementById('upload-status');
         const textArea = document.getElementById('exam-text');
         
         if (fileInput.files.length === 0) return;
-        
         const file = fileInput.files[0];
-        statusText.innerHTML = "⏳ 正在讀取 PDF 文字中...";
-        statusText.style.color = "#0d6efd";
-
-        const formData = new FormData();
-        formData.append('file', file);
+        statusText.innerHTML = "⏳ 正在掃描考卷中..."; statusText.style.color = "var(--navy-base)";
+        const formData = new FormData(); formData.append('file', file);
 
         try {
-            const response = await fetch('/api/upload_pdf', {
-                method: 'POST',
-                body: formData
-            });
-
+            const response = await fetch('/api/upload_pdf', { method: 'POST', body: formData });
             const data = await response.json();
-
             if (response.ok) {
                 textArea.value = data.text;
-                statusText.innerHTML = "✅ PDF 讀取成功！點擊「分析單字」即可開始。";
-                statusText.style.color = "#198754";
+                statusText.innerHTML = "✅ 考卷載入成功！"; statusText.style.color = "#198754";
             } else {
-                statusText.innerHTML = "❌ " + data.error;
-                statusText.style.color = "red";
+                statusText.innerHTML = "❌ " + data.error; statusText.style.color = "red";
             }
         } catch (error) {
-            statusText.innerHTML = "❌ 連線失敗";
-            statusText.style.color = "red";
+            statusText.innerHTML = "❌ 連線失敗"; statusText.style.color = "red";
         }
         fileInput.value = '';
     }

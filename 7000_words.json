@@ -4496,9 +4496,9 @@
     },
     {
         "word": "product",
-        "phonetic": "[ˋprɑdəkt] n.產品[C]",
+        "phonetic": "[ˋprɑdəkt] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.產品[C]"
     },
     {
         "word": "profit",
@@ -4610,9 +4610,9 @@
     },
     {
         "word": "radar",
-        "phonetic": "[ˋredɑr] n.雷達[C]",
+        "phonetic": "[ˋredɑr] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.雷達[C]"
     },
     {
         "word": "rag",
@@ -4622,9 +4622,9 @@
     },
     {
         "word": "raisin",
-        "phonetic": "[ˋrezn] n.葡萄乾[C]",
+        "phonetic": "[ˋrezn] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.葡萄乾[C]"
     },
     {
         "word": "rank",
@@ -4646,21 +4646,21 @@
     },
     {
         "word": "ray",
-        "phonetic": "[re] n.光線[C]",
+        "phonetic": "[re] ",
         "part_of_speech": "",
-        "meaning": "；射線"
+        "meaning": "n.光線[C]；射線"
     },
     {
         "word": "razor",
-        "phonetic": "[ˋrezɚ] n.剃刀[C]",
+        "phonetic": "[ˋrezɚ] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.剃刀[C]"
     },
     {
         "word": "react",
-        "phonetic": "[rɪˋækt] vi.反應[(+to)]",
+        "phonetic": "[rɪˋækt] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "vi.反應[(+to)]"
     },
     {
         "word": "reaction",
@@ -4922,9 +4922,9 @@
     },
     {
         "word": "risk",
-        "phonetic": "[rɪsk] n.危險，風險 vt.冒…的風險[+V-ing]",
+        "phonetic": "[rɪsk] ",
         "part_of_speech": "",
-        "meaning": ""
+        "meaning": "n.危險，風險 vt.冒…的風險[+V-ing]"
     },
     {
         "word": "roar",
