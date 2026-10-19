@@ -43,18 +43,19 @@
 
    安裝依賴套件 (Install Dependencies)
 
-```Bash
+Bash
 pip install -r requirements.txt
 下載 spaCy 英文語言模型
-
 
 Bash
 python -m spacy download en_core_web_sm
 啟動 Flask 開發伺服器
-
+```
+```
 Bash
 python app.py
 伺服器啟動後，請在瀏覽器前往 http://127.0.0.1:5000 即可使用。
+```
 
 ☁️ 雲端部署指南 (Render Deployment)
 本專案已配置適用於 Render 的生產環境設定：
