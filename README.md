@@ -40,19 +40,19 @@
 ```bash
    git clone [https://github.com/thisisme66688/ENGLISH.git](https://github.com/thisisme66688/ENGLISH.git)
    cd 英文考卷分析
-
+```
    安裝依賴套件 (Install Dependencies)
 
-Bash
+```Bash
 pip install -r requirements.txt
 下載 spaCy 英文語言模型
-
-Bash
+```
+```Bash
 python -m spacy download en_core_web_sm
 啟動 Flask 開發伺服器
 ```
-```
-Bash
+
+```Bash
 python app.py
 伺服器啟動後，請在瀏覽器前往 http://127.0.0.1:5000 即可使用。
 ```
