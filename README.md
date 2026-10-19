@@ -37,15 +37,16 @@
 ## 🚀 本機開發與執行 (Local Setup)
 
 1. **複製專案 (Clone Repository)**
-   ```bash
+```bash
    git clone [https://github.com/thisisme66688/ENGLISH.git](https://github.com/thisisme66688/ENGLISH.git)
    cd 英文考卷分析
 
    安裝依賴套件 (Install Dependencies)
 
-Bash
+```Bash
 pip install -r requirements.txt
 下載 spaCy 英文語言模型
+
 
 Bash
 python -m spacy download en_core_web_sm
